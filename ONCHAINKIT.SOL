@@ -1,0 +1,169 @@
+/**
+ *Submitted for verification at basescan.org on 2025-03-02
+*/
+
+/**
+ *Submitted for verification at sepolia.basescan.org on 2025-03-02
+*/
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract EmpreinteOnChain {
+    struct Interaction {
+        address utilisateur;
+        string message;
+        uint256 timestamp;
+    }
+
+    struct NFT {
+        uint256 id;
+        address proprietaire;
+        string tokenURI;
+    }
+
+    Interaction[] public interactions;
+    mapping(address => uint256) public compteInteractionsUtilisateur;
+    mapping(uint256 => NFT) public nfts;
+    mapping(address => uint256) public tokensStakes;
+    uint256 private _tokenIds;
+
+    // Événements
+    event NouvelleInteraction(address indexed utilisateur, string message, uint256 timestamp);
+    event NFTCree(address indexed utilisateur, uint256 tokenId, string tokenURI);
+    event Stake(address indexed utilisateur, uint256 tokenId);
+    event Unstake(address indexed utilisateur, uint256 tokenId);
+    event LikeOuDislikeEnregistre(address indexed utilisateur, string typeClic, uint256 timestamp);
+    event BullishOuBearishEnregistre(address indexed utilisateur, string typeOpinion, uint256 timestamp);
+
+    /**
+     * @dev Enregistre une interaction avec un message spécifique.
+     * @param _message Le message que l'utilisateur souhaite envoyer.
+     */
+    function sayWhatYouWant(string memory _message) public {
+        require(bytes(_message).length > 0, "Le message ne peut pas etre vide");
+        
+        interactions.push(Interaction({
+            utilisateur: msg.sender,
+            message: _message,
+            timestamp: block.timestamp
+        }));
+        
+        compteInteractionsUtilisateur[msg.sender]++;
+        
+        emit NouvelleInteraction(msg.sender, _message, block.timestamp);
+    }
+
+    /**
+     * @dev Permet à un utilisateur de dire "gm" (salutation du matin).
+     */
+    function sayGm() public {
+        sayWhatYouWant("gm");
+    }
+
+    /**
+     * @dev Permet à un utilisateur de dire "gn" (salutation du soir).
+     */
+    function sayGn() public {
+        sayWhatYouWant("gn");
+    }
+
+    /**
+     * @dev Permet à un utilisateur de dire "Base".
+     */
+    function sayBase() public {
+        sayWhatYouWant("Base");
+    }
+
+    /**
+     * @dev Permet à un utilisateur de dire "WE ARE BASED".
+     */
+    function sayWeAreBased() public {
+        sayWhatYouWant("WE ARE BASED");
+    }
+
+    /**
+     * @dev Permet à un utilisateur de créer un NFT.
+     * @param tokenURI L'URI du NFT.
+     */
+    function createNFT(string memory tokenURI) public {
+        _tokenIds++;
+        uint256 nouveauTokenId = _tokenIds;
+        nfts[nouveauTokenId] = NFT({
+            id: nouveauTokenId,
+            proprietaire: msg.sender,
+            tokenURI: tokenURI
+        });
+        emit NFTCree(msg.sender, nouveauTokenId, tokenURI);
+    }
+
+    /**
+     * @dev Permet à un utilisateur de staker un NFT.
+     * @param tokenId L'ID du NFT à staker.
+     */
+    function stakeNFT(uint256 tokenId) public {
+        require(nfts[tokenId].proprietaire == msg.sender, "Vous devez etre le proprietaire du NFT pour le staker");
+        require(tokensStakes[msg.sender] == 0, "Vous avez deja un NFT stake");
+
+        tokensStakes[msg.sender] = tokenId;
+        emit Stake(msg.sender, tokenId);
+    }
+
+    /**
+     * @dev Permet à un utilisateur de unstaker un NFT.
+     */
+    function unstakeNFT() public {
+        require(tokensStakes[msg.sender] != 0, "Aucun NFT stake");
+
+        uint256 tokenId = tokensStakes[msg.sender];
+        tokensStakes[msg.sender] = 0;
+        emit Unstake(msg.sender, tokenId);
+    }
+
+    /**
+     * @dev Permet à un utilisateur d'enregistrer un "like" ou un "dislike".
+     * @param typeClic Le type de clic, qui doit être soit "like" soit "dislike".
+     */
+    function likeOuDislike(string memory typeClic) public {
+        require(bytes(typeClic).length > 0, "Le type de clic ne peut pas etre vide");
+        require(
+            keccak256(abi.encodePacked(typeClic)) == keccak256(abi.encodePacked("like")) || 
+            keccak256(abi.encodePacked(typeClic)) == keccak256(abi.encodePacked("dislike")),
+            "Le type de clic doit etre 'like' ou 'dislike'"
+        );
+
+        emit LikeOuDislikeEnregistre(msg.sender, typeClic, block.timestamp);
+    }
+
+    /**
+     * @dev Permet à un utilisateur d'enregistrer une opinion "bullish" ou "bearish".
+     * @param opinion Le type d'opinion, soit "bullish" soit "bearish".
+     */
+    function jeSuisFkinBullishOuBearish(string memory opinion) public {
+        require(bytes(opinion).length > 0, "L'opinion ne peut pas etre vide");
+        require(
+            keccak256(abi.encodePacked(opinion)) == keccak256(abi.encodePacked("bullish")) || 
+            keccak256(abi.encodePacked(opinion)) == keccak256(abi.encodePacked("bearish")),
+            "L'opinion doit etre 'bullish' ou 'bearish'"
+        );
+
+        emit BullishOuBearishEnregistre(msg.sender, opinion, block.timestamp);
+    }
+
+    /**
+     * @dev Permet à tout utilisateur de consulter le nombre total d'interactions enregistrées.
+     * @return Le nombre total d'interactions.
+     */
+    function obtenirTotalInteractions() public view returns (uint256) {
+        return interactions.length;
+    }
+
+    /**
+     * @dev Permet à tout utilisateur de consulter le nombre total d'interactions effectuées par un utilisateur spécifique.
+     * @param utilisateur L'adresse de l'utilisateur pour lequel on souhaite connaître le nombre d'interactions.
+     * @return Le nombre total d'interactions de l'utilisateur.
+     */
+    function obtenirInteractionsUtilisateur(address utilisateur) public view returns (uint256) {
+        return compteInteractionsUtilisateur[utilisateur];
+    }
+}
