@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base On Chain Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <style>
+        /* Reset et base de style */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f9; /* Couleur plus douce pour l'arrière-plan */
+            color: #0a42d5; /* Bleu */
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Bandeau blanc légèrement plus large que le titre */
+        .header-banner {
+            background-color: #e0e0e0; /* Fond plus doux */
+            height: 10px;
+            width: calc(100% + 40px);
+            margin-left: -20px;
+            margin-bottom: 20px;
+            position: relative;
+            top: 60px;
+        }
+
+        /* Ajout des traits à gauche et à droite */
+        .left-line, .right-line {
+            position: absolute;
+            top: 0;
+            width: 10px;
+            height: 100%;
+            background-color: #0a42d5; /* Bleu */
+        }
+
+        .left-line {
+            left: 0;
+        }
+
+        .right-line {
+            right: 0;
+        }
+
+        /* Header */
+        header {
+            background-color: #0a42d5; /* Bleu */
+            padding: 80px 20px;
+            text-align: center;
+            color: #fff;
+            position: relative;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 4rem;
+            font-family: 'Orbitron', sans-serif;
+            color: white;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        header p {
+            font-size: 1.5rem;
+            color: #e0e0e0;
+            font-weight: 400;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Lien vers le contrat */
+        .contract-link {
+            display: block;
+            font-size: 1.2rem;
+            color: #fff;
+            text-decoration: none;
+            margin-top: 20px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .contract-link:hover {
+            color: #0a42d5; /* Bleu */
+            text-decoration: underline;
+        }
+
+        /* Styles pour le lien X */
+        .x-link {
+            color: #0a42d5; /* Bleu */
+            text-decoration: none;
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            display: block;
+            margin-top: 40px;
+            transition: color 0.3s ease;
+        }
+
+        .x-link:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        /* Conteneur principal */
+        .container {
+            max-width: 1100px;
+            margin: 50px auto;
+            padding: 30px;
+            background: #fff; /* Fond blanc mais plus doux */
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: #0a42d5; /* Bleu */
+            text-transform: uppercase;
+        }
+
+        /* Liste des actions */
+        .action-list {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .action-item {
+            background-color: #f9f9f9; /* Gris clair pour le fond */
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-item:hover {
+            transform: translateY(-8px);
+            background-color: #0a42d5; /* Bleu */
+            color: #fff;
+        }
+
+        .action-title {
+            font-size: 1.8rem;
+            color: #0a42d5; /* Bleu */
+            font-weight: 600;
+            text-transform: capitalize;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        .action-description {
+            font-size: 1.1rem;
+            color: #0a42d5; /* Bleu */
+            margin-top: 15px;
+            text-align: justify;
+            font-weight: 400;
+        }
+
+        .action-item:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(62, 159, 239, 0.2);
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        .action-item:hover:before {
+            opacity: 1;
+        }
+
+        /* Section Bullish / Bearish */
+        .vote-section {
+            background-color: #3c4a63; /* Teinte plus sombre pour le fond */
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .vote-section h3 {
+            text-align: center;
+            color: #fff;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .vote-option {
+            font-size: 1.2rem;
+            text-align: center;
+            color: #b0c4d1;
+            margin-top: 10px;
+        }
+
+        .vote-description {
+            color: #e0e0e0;
+            font-size: 1rem;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        /* Retrait de l'effet visuel latéral */
+        /* Effet graphique latéral */
+        /* .side-effects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(to right, #0a42d5 25%, transparent 75%),
+                        linear-gradient(to left, #0a42d5 25%, transparent 75%);
+            background-size: 10px 100%;
+            animation: sideEffectAnimation 5s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes sideEffectAnimation {
+            0% {
+                background-position: 0 0, 100% 0;
+            }
+            50% {
+                background-position: 100% 0, 0 0;
+            }
+            100% {
+                background-position: 0 0, 100% 0;
+            }
+        } */
+
+        /* Animations pour les éléments */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        /* Responsivité */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .action-title {
+                font-size: 1.5rem;
+            }
+
+            .action-description {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Bandeau blanc légèrement plus large que le titre -->
+<div class="header-banner"></div>
+
+<!-- Ajout des traits à gauche et à droite -->
+<div class="left-line"></div>
+<div class="right-line"></div>
+
+<!-- Header -->
+<header>
+    <h1>Base On Chain Tool</h1>
+    <p>Explorez les actions disponibles sur le contrat intelligent</p>
+    <!-- Lien vers le contrat mis à jour -->
+    <a href="https://basescan.org/address/0x0eF209f0D38d209FD591E583D2b7813181096C49#writeContract" class="contract-link" target="_blank">Voir le contrat sur BaseScan</a>
+</header>
+
+<!-- Contenu de la page -->
+<div class="container">
+    <h2>Actions Disponibles</h2>
+
+    <ul class="action-list">
+        <li class="action-item" aria-label="Envoyer un message sur la blockchain">
+            <div class="action-title">Envoyer un Message</div>
+            <div class="action-description">
+                Créez des interactions simples et engageantes sur la blockchain en envoyant des messages tels que "gm", "gn" ou "WE ARE BASED".
+            </div>
+        </li>
+
+        <li class="action-item" aria-label="Créer un NFT">
+            <a href="https://basescan.org/address/0x0eF209f0D38d209FD591E583D2b7813181096C49#writeContract" target="_blank" class="action-title highlight-link" style="text-decoration: none;">
+                Créer un NFT
+            </a>
+            <div class="action-description">
+                Créez des NFT uniques en fournissant une URI de jeton pour représenter des objets numériques, des œuvres d'art ou des objets de collection sur la blockchain.
+            </div>
+        </li>
+
+        <li class="action-item" aria-label="Mettre un NFT en Staking">
+            <div class="action-title">Mettre un NFT en Staking</div>
+            <div class="action-description">
+                Stakez vos NFT pour obtenir des avantages exclusifs et participer à des événements spéciaux de la communauté.
+            </div>
+        </li>
+
+        <li class="action-item" aria-label="Retirer un NFT du Staking">
+            <div class="action-title">Retirer un NFT du Staking</div>
+            <div class="action-description">
+                Retirez vos NFT du staking pour libérer vos ressources ou les utiliser ailleurs.
+            </div>
+        </li>
+
+        <li class="action-item" aria-label="Enregistrer un Like / Dislike">
+            <div class="action-title">Enregistrer un Like / Dislike</div>
+            <div class="action-description">
+                Enregistrez un "Like" ou un "Dislike" pour indiquer vos préférences ou opinions sur certaines actions.
+            </div>
+        </li>
+
+        <!-- Section Bullish / Bearish -->
+        <li class="action-item">
+            <div class="action-title">Bullish / Bearish</div>
+            <div class="action-description">
+                Vous pouvez enregistrer votre état d'esprit (Bullish ou Bearish) via le contrat intelligent. Cela reflète votre opinion sur le marché actuel.
+            </div>
+        </li>
+
+    </ul>
+
+    <!-- Lien vers X -->
+    <a href="https://x.com" class="x-link" target="_blank">X</a>
+</div>
+
+</body>
+</html>
